@@ -164,4 +164,9 @@ MCITrack models&results/
 pretrained/
 output/
 
+supervisely.env
+input_data/
+app_data/
+weights/
+supervisely_integration/src/test.py
 

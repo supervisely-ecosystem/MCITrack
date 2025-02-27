@@ -1,0 +1,4 @@
+update_threshold: 0.8
+update_h_t: 0.88
+update_intervals: 70
+memory_bank: 500

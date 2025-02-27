@@ -1,0 +1,58 @@
+[
+    {
+        "Model": "MCITrack-T224",
+        "Backbone": "Fast-iTPN-T",
+        "Params (M)": "32",
+        "FLOPs (G)": "13",
+        "Speed (fps)": "51",
+        "LaSOT AUC": "71.7",
+        "TrackingNet AUC": "84.8",
+        "GOT-10K AO": "74.0",
+        "weights": {
+            "backbone": "/weights/fast_itpn_tiny_1600e_1k.pt",
+            "checkpoint": "/weights/MCITRACK_tiny.pth.tar"
+        }
+    },
+    {
+        "Model": "MCITrack-S224",
+        "Backbone": "Fast-iTPN-S",
+        "Params (M)": "45",
+        "FLOPs (G)": "19",
+        "Speed (fps)": "40",
+        "LaSOT AUC": "73.8",
+        "TrackingNet AUC": "85.6",
+        "GOT-10K AO": "76.9",
+        "weights": {
+            "backbone": "/weights/fast_itpn_small_1600e_1k.pt",
+            "checkpoint": "/weights/MCITRACK_small.pth.tar"
+        }
+    },
+    {
+        "Model": "MCITrack-B224",
+        "Backbone": "Fast-iTPN-B",
+        "Params (M)": "88",
+        "FLOPs (G)": "38",
+        "Speed (fps)": "35",
+        "LaSOT AUC": "75.3",
+        "TrackingNet AUC": "86.3",
+        "GOT-10K AO": "77.9",
+        "weights": {
+            "backbone": "/weights/fast_itpn_base_clipl_e1600.pt",
+            "checkpoint": "/weights/MCITRACK_base.pth.tar"
+        }
+    },
+    {
+        "Model": "MCITrack-L224",
+        "Backbone": "Fast-iTPN-L",
+        "Params (M)": "287",
+        "FLOPs (G)": "123",
+        "Speed (fps)": "16",
+        "LaSOT AUC": "76.1",
+        "TrackingNet AUC": "86.9",
+        "GOT-10K AO": "79.3",
+        "weights": {
+            "backbone": "/weights/fast_itpn_large_e1600_1k.pt",
+            "checkpoint": "/weights/MCITRACK_large.pth.tar"
+        }
+    }
+]

@@ -26,13 +26,17 @@ import os
 current_file_path = os.getcwd()
 
 
-def _cfg(url='', **kwargs):
+def _cfg(url="", **kwargs):
     return {
-        'url': url,
-        'num_classes': 1000, 'input_size': (3, 224, 224), 'pool_size': None,
-        'crop_pct': .9, 'interpolation': 'bicubic',
-        'mean': (0.5, 0.5, 0.5), 'std': (0.5, 0.5, 0.5),
-        **kwargs
+        "url": url,
+        "num_classes": 1000,
+        "input_size": (3, 224, 224),
+        "pool_size": None,
+        "crop_pct": 0.9,
+        "interpolation": "bicubic",
+        "mean": (0.5, 0.5, 0.5),
+        "std": (0.5, 0.5, 0.5),
+        **kwargs,
     }
 
 
@@ -40,8 +44,7 @@ _shape_t = Union[int, List[int], Size]
 
 
 class DropPath(nn.Module):
-    """Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks).
-    """
+    """Drop paths (Stochastic Depth) per sample  (when applied in main path of residual blocks)."""
 
     def __init__(self, drop_prob=None):
         super(DropPath, self).__init__()
@@ -51,13 +54,20 @@ class DropPath(nn.Module):
         return drop_path(x, self.drop_prob, self.training)
 
     def extra_repr(self) -> str:
-        return 'p={}'.format(self.drop_prob)
+        return "p={}".format(self.drop_prob)
 
 
 class Mlp(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.,
-                 norm_layer=nn.LayerNorm, subln=False
-                 ):
+    def __init__(
+        self,
+        in_features,
+        hidden_features=None,
+        out_features=None,
+        act_layer=nn.GELU,
+        drop=0.0,
+        norm_layer=nn.LayerNorm,
+        subln=False,
+    ):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
@@ -80,9 +90,16 @@ class Mlp(nn.Module):
 
 
 class ConvMlp(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.,
-                 norm_layer=nn.LayerNorm, subln=False
-                 ):
+    def __init__(
+        self,
+        in_features,
+        hidden_features=None,
+        out_features=None,
+        act_layer=nn.GELU,
+        drop=0.0,
+        norm_layer=nn.LayerNorm,
+        subln=False,
+    ):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
@@ -108,9 +125,16 @@ class ConvMlp(nn.Module):
 
 
 class SwiGLU(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.SiLU, drop=0.,
-                 norm_layer=nn.LayerNorm, subln=False
-                 ):
+    def __init__(
+        self,
+        in_features,
+        hidden_features=None,
+        out_features=None,
+        act_layer=nn.SiLU,
+        drop=0.0,
+        norm_layer=nn.LayerNorm,
+        subln=False,
+    ):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
@@ -135,9 +159,16 @@ class SwiGLU(nn.Module):
 
 
 class ConvSwiGLU(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.SiLU, drop=0.,
-                 norm_layer=nn.LayerNorm, subln=False
-                 ):
+    def __init__(
+        self,
+        in_features,
+        hidden_features=None,
+        out_features=None,
+        act_layer=nn.SiLU,
+        drop=0.0,
+        norm_layer=nn.LayerNorm,
+        subln=False,
+    ):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
@@ -164,8 +195,18 @@ class ConvSwiGLU(nn.Module):
 
 class Attention(nn.Module):
     def __init__(
-            self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., window_size=None,
-            attn_head_dim=None, use_decoupled_rel_pos_bias=False, deepnorm=False, subln=False
+        self,
+        dim,
+        num_heads=8,
+        qkv_bias=False,
+        qk_scale=None,
+        attn_drop=0.0,
+        proj_drop=0.0,
+        window_size=None,
+        attn_head_dim=None,
+        use_decoupled_rel_pos_bias=False,
+        deepnorm=False,
+        subln=False,
     ):
         super().__init__()
         self.num_heads = num_heads
@@ -173,7 +214,7 @@ class Attention(nn.Module):
         if attn_head_dim is not None:
             head_dim = attn_head_dim
         all_head_dim = head_dim * self.num_heads
-        self.scale = qk_scale or head_dim ** -0.5
+        self.scale = qk_scale or head_dim**-0.5
 
         self.deepnorm = deepnorm
         self.subln = subln
@@ -199,13 +240,17 @@ class Attention(nn.Module):
 
         if window_size:
             if use_decoupled_rel_pos_bias:
-                self.rel_pos_bias = DecoupledRelativePositionBias(window_size=window_size, num_heads=num_heads)
+                self.rel_pos_bias = DecoupledRelativePositionBias(
+                    window_size=window_size, num_heads=num_heads
+                )
             else:
                 self.window_size = window_size
                 self.num_relative_distance = (2 * window_size[0] - 1) * (
-                        2 * window_size[1] - 1) + 3  # (2*14-1) * (2*14-1) + 3
+                    2 * window_size[1] - 1
+                ) + 3  # (2*14-1) * (2*14-1) + 3
                 self.relative_position_bias_table = nn.Parameter(
-                    torch.zeros(self.num_relative_distance, num_heads))  # 2*Wh-1 * 2*Ww-1, nH
+                    torch.zeros(self.num_relative_distance, num_heads)
+                )  # 2*Wh-1 * 2*Ww-1, nH
                 # cls to token & token 2 cls & cls to cls
 
                 # get pair-wise relative position index for each token inside the window
@@ -213,14 +258,22 @@ class Attention(nn.Module):
                 coords_w = torch.arange(window_size[1])
                 coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
                 coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
-                relative_coords = coords_flatten[:, :, None] - coords_flatten[:, None, :]  # 2, Wh*Ww, Wh*Ww
-                relative_coords = relative_coords.permute(1, 2, 0).contiguous()  # Wh*Ww, Wh*Ww, 2
+                relative_coords = (
+                    coords_flatten[:, :, None] - coords_flatten[:, None, :]
+                )  # 2, Wh*Ww, Wh*Ww
+                relative_coords = relative_coords.permute(
+                    1, 2, 0
+                ).contiguous()  # Wh*Ww, Wh*Ww, 2
                 relative_coords[:, :, 0] += window_size[0] - 1  # shift to start from 0
                 relative_coords[:, :, 1] += window_size[1] - 1
                 relative_coords[:, :, 0] *= 2 * window_size[1] - 1
-                relative_position_index = \
-                    torch.zeros(size=(window_size[0] * window_size[1] + 1,) * 2, dtype=relative_coords.dtype)
-                relative_position_index[1:, 1:] = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
+                relative_position_index = torch.zeros(
+                    size=(window_size[0] * window_size[1] + 1,) * 2,
+                    dtype=relative_coords.dtype,
+                )
+                relative_position_index[1:, 1:] = relative_coords.sum(
+                    -1
+                )  # Wh*Ww, Wh*Ww
                 relative_position_index[0, 0:] = self.num_relative_distance - 3
                 relative_position_index[0:, 0] = self.num_relative_distance - 2
                 relative_position_index[0, 0] = self.num_relative_distance - 1
@@ -239,29 +292,44 @@ class Attention(nn.Module):
             k = F.linear(input=x, weight=self.k_proj.weight, bias=None)
             v = F.linear(input=x, weight=self.v_proj.weight, bias=self.v_bias)
 
-            q = q.reshape(B, N, self.num_heads, -1).permute(0, 2, 1, 3)  # B, num_heads, N, C
+            q = q.reshape(B, N, self.num_heads, -1).permute(
+                0, 2, 1, 3
+            )  # B, num_heads, N, C
             k = k.reshape(B, N, self.num_heads, -1).permute(0, 2, 1, 3)
             v = v.reshape(B, N, self.num_heads, -1).permute(0, 2, 1, 3)
         else:
             qkv_bias = None
             if self.q_bias is not None:
-                qkv_bias = torch.cat((self.q_bias, torch.zeros_like(self.v_bias, requires_grad=False), self.v_bias))
+                qkv_bias = torch.cat(
+                    (
+                        self.q_bias,
+                        torch.zeros_like(self.v_bias, requires_grad=False),
+                        self.v_bias,
+                    )
+                )
             qkv = F.linear(input=x, weight=self.qkv.weight, bias=qkv_bias)
-            qkv = qkv.reshape(B, N, 3, self.num_heads, -1).permute(2, 0, 3, 1, 4)  # 3, B, num_heads, N, C
+            qkv = qkv.reshape(B, N, 3, self.num_heads, -1).permute(
+                2, 0, 3, 1, 4
+            )  # 3, B, num_heads, N, C
             q, k, v = qkv[0], qkv[1], qkv[2]
 
         q = q * self.scale
         if self.qk_float:
-            attn = (q.float() @ k.float().transpose(-2, -1))
+            attn = q.float() @ k.float().transpose(-2, -1)
         else:
-            attn = (q @ k.transpose(-2, -1))
+            attn = q @ k.transpose(-2, -1)
 
         if self.relative_position_bias_table is not None:
-            relative_position_bias = \
-                self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
-                    self.window_size[0] * self.window_size[1] + 1,
-                    self.window_size[0] * self.window_size[1] + 1, -1)  # Wh*Ww,Wh*Ww,nH
-            relative_position_bias = relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
+            relative_position_bias = self.relative_position_bias_table[
+                self.relative_position_index.view(-1)
+            ].view(
+                self.window_size[0] * self.window_size[1] + 1,
+                self.window_size[0] * self.window_size[1] + 1,
+                -1,
+            )  # Wh*Ww,Wh*Ww,nH
+            relative_position_bias = relative_position_bias.permute(
+                2, 0, 1
+            ).contiguous()  # nH, Wh*Ww, Wh*Ww
             attn = attn + relative_position_bias.unsqueeze(0).type_as(attn)
 
         if self.rel_pos_bias is not None:
@@ -284,37 +352,58 @@ class Attention(nn.Module):
 
 class Block(nn.Module):
 
-    def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., init_values=None, norm_layer=nn.LayerNorm, window_size=None, attn_head_dim=None,
-                 use_decoupled_rel_pos_bias=False,
-                 depth=None,
-                 postnorm=False,
-                 deepnorm=False,
-                 subln=False,
-                 swiglu=False,
-                 naiveswiglu=False,
-                 ):
+    def __init__(
+        self,
+        dim,
+        num_heads,
+        mlp_ratio=4.0,
+        qkv_bias=False,
+        qk_scale=None,
+        drop=0.0,
+        attn_drop=0.0,
+        drop_path=0.0,
+        init_values=None,
+        norm_layer=nn.LayerNorm,
+        window_size=None,
+        attn_head_dim=None,
+        use_decoupled_rel_pos_bias=False,
+        depth=None,
+        postnorm=False,
+        deepnorm=False,
+        subln=False,
+        swiglu=False,
+        naiveswiglu=False,
+    ):
         super().__init__()
 
         with_attn = num_heads > 0
 
         self.norm1 = norm_layer(dim) if with_attn else None
-        self.attn = Attention(
-            dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale,
-            attn_drop=attn_drop, proj_drop=drop, window_size=window_size,
-            use_decoupled_rel_pos_bias=use_decoupled_rel_pos_bias, attn_head_dim=attn_head_dim,
-            deepnorm=deepnorm,
-            subln=subln
-        ) if with_attn else None
+        self.attn = (
+            Attention(
+                dim,
+                num_heads=num_heads,
+                qkv_bias=qkv_bias,
+                qk_scale=qk_scale,
+                attn_drop=attn_drop,
+                proj_drop=drop,
+                window_size=window_size,
+                use_decoupled_rel_pos_bias=use_decoupled_rel_pos_bias,
+                attn_head_dim=attn_head_dim,
+                deepnorm=deepnorm,
+                subln=subln,
+            )
+            if with_attn
+            else None
+        )
 
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
+        self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.norm2 = norm_layer(dim)
 
         mlp_hidden_dim = int(dim * mlp_ratio)
         if swiglu:
             self.mlp = xops.SwiGLU(
-                in_features=dim,
-                hidden_features=mlp_hidden_dim
+                in_features=dim, hidden_features=mlp_hidden_dim
             )  # hidden_features: 2/3
         elif naiveswiglu:
             self.mlp = SwiGLU(
@@ -328,13 +417,18 @@ class Block(nn.Module):
                 in_features=dim,
                 hidden_features=mlp_hidden_dim,
                 subln=subln,
-                norm_layer=norm_layer
+                norm_layer=norm_layer,
             )
 
         if init_values is not None and init_values > 0:
-            self.gamma_1 = nn.Parameter(init_values * torch.ones((dim)),
-                                        requires_grad=True) if self.attn is not None else None
-            self.gamma_2 = nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
+            self.gamma_1 = (
+                nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
+                if self.attn is not None
+                else None
+            )
+            self.gamma_2 = nn.Parameter(
+                init_values * torch.ones((dim)), requires_grad=True
+            )
         else:
             self.gamma_1, self.gamma_2 = None, None
 
@@ -349,7 +443,10 @@ class Block(nn.Module):
             if self.postnorm:
                 if self.attn is not None:
                     x = x + self.drop_path(
-                        self.norm1(self.attn(x, rel_pos_bias=rel_pos_bias, attn_mask=attn_mask)))
+                        self.norm1(
+                            self.attn(x, rel_pos_bias=rel_pos_bias, attn_mask=attn_mask)
+                        )
+                    )
                 x = x + self.drop_path(self.norm2(self.mlp(x)))
             elif self.deepnorm:
                 if self.attn is not None:
@@ -367,45 +464,65 @@ class Block(nn.Module):
             else:
                 if self.attn is not None:
                     x = x + self.drop_path(
-                        self.attn(self.norm1(x), rel_pos_bias=rel_pos_bias, attn_mask=attn_mask))
+                        self.attn(
+                            self.norm1(x),
+                            rel_pos_bias=rel_pos_bias,
+                            attn_mask=attn_mask,
+                        )
+                    )
                 x = x + self.drop_path(self.mlp(self.norm2(x)))
         else:
             if self.postnorm:
                 if self.attn is not None:
                     x = x + self.drop_path(
-                        self.gamma_1 * self.norm1(self.attn(x, rel_pos_bias=rel_pos_bias, attn_mask=attn_mask)))
+                        self.gamma_1
+                        * self.norm1(
+                            self.attn(x, rel_pos_bias=rel_pos_bias, attn_mask=attn_mask)
+                        )
+                    )
                 x = x + self.drop_path(self.gamma_2 * self.norm2(self.mlp(x)))
             else:
                 if self.attn is not None:
                     x = x + self.drop_path(
-                        self.gamma_1 * self.attn(self.norm1(x), rel_pos_bias=rel_pos_bias, attn_mask=attn_mask))
+                        self.gamma_1
+                        * self.attn(
+                            self.norm1(x),
+                            rel_pos_bias=rel_pos_bias,
+                            attn_mask=attn_mask,
+                        )
+                    )
                 x = x + self.drop_path(self.gamma_2 * self.mlp(self.norm2(x)))
         return x
 
 
 class ConvMlpBlock(nn.Module):
 
-    def __init__(self, dim, mlp_ratio=4., drop_path=0., init_values=None, norm_layer=nn.LayerNorm,
-                 depth=None,
-                 postnorm=False,
-                 deepnorm=False,
-                 subln=False,
-                 swiglu=False,
-                 naiveswiglu=False,
-                 ):
+    def __init__(
+        self,
+        dim,
+        mlp_ratio=4.0,
+        drop_path=0.0,
+        init_values=None,
+        norm_layer=nn.LayerNorm,
+        depth=None,
+        postnorm=False,
+        deepnorm=False,
+        subln=False,
+        swiglu=False,
+        naiveswiglu=False,
+    ):
         super().__init__()
 
         self.attn = None
 
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
+        self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         self.norm2 = norm_layer(dim)
 
         mlp_hidden_dim = int(dim * mlp_ratio)
 
         if swiglu:
             self.mlp = xops.SwiGLU(
-                in_features=dim,
-                hidden_features=mlp_hidden_dim
+                in_features=dim, hidden_features=mlp_hidden_dim
             )  # hidden_features: 2/3
         elif naiveswiglu:
             self.mlp = ConvSwiGLU(
@@ -419,13 +536,18 @@ class ConvMlpBlock(nn.Module):
                 in_features=dim,
                 hidden_features=mlp_hidden_dim,
                 subln=subln,
-                norm_layer=norm_layer
+                norm_layer=norm_layer,
             )
 
         if init_values is not None and init_values > 0:
-            self.gamma_1 = nn.Parameter(init_values * torch.ones((dim)),
-                                        requires_grad=True) if self.attn is not None else None
-            self.gamma_2 = nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
+            self.gamma_1 = (
+                nn.Parameter(init_values * torch.ones((dim)), requires_grad=True)
+                if self.attn is not None
+                else None
+            )
+            self.gamma_2 = nn.Parameter(
+                init_values * torch.ones((dim)), requires_grad=True
+            )
         else:
             self.gamma_1, self.gamma_2 = None, None
 
@@ -446,7 +568,9 @@ class ConvMlpBlock(nn.Module):
                 x = residual * self.alpha + x
                 x = self.norm2(x)
             else:
-                x = x + self.drop_path(self.mlp(self.norm2(x.permute(0, 2, 3, 1)).permute(0, 3, 1, 2)))
+                x = x + self.drop_path(
+                    self.mlp(self.norm2(x.permute(0, 2, 3, 1)).permute(0, 3, 1, 2))
+                )
         else:
             if self.postnorm:
                 x = x + self.drop_path(self.gamma_2 * self.norm2(self.mlp(x)))
@@ -457,11 +581,22 @@ class ConvMlpBlock(nn.Module):
 
 
 class PatchEmbed(nn.Module):
-    def __init__(self, img_size=224, patch_size=16, inner_patches=4, in_chans=3, embed_dim=128, norm_layer=None):
+    def __init__(
+        self,
+        img_size=224,
+        patch_size=16,
+        inner_patches=4,
+        in_chans=3,
+        embed_dim=128,
+        norm_layer=None,
+    ):
         super().__init__()
         img_size = to_2tuple(img_size)
         patch_size = to_2tuple(patch_size)
-        patches_resolution = [img_size[0] // patch_size[0], img_size[1] // patch_size[1]]
+        patches_resolution = [
+            img_size[0] // patch_size[0],
+            img_size[1] // patch_size[1],
+        ]
         self.img_size = img_size
         self.patch_size = patch_size
         self.inner_patches = inner_patches
@@ -472,7 +607,9 @@ class PatchEmbed(nn.Module):
         self.embed_dim = embed_dim
 
         conv_size = [size // inner_patches for size in patch_size]
-        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=conv_size, stride=conv_size)
+        self.proj = nn.Conv2d(
+            in_chans, embed_dim, kernel_size=conv_size, stride=conv_size
+        )
         if norm_layer is not None:
             self.norm = norm_layer(embed_dim)
         else:
@@ -482,40 +619,73 @@ class PatchEmbed(nn.Module):
         B, C, H, W = x.shape
         patches_resolution = (H // self.patch_size[0], W // self.patch_size[1])
         num_patches = patches_resolution[0] * patches_resolution[1]
-        x = self.proj(x).view(
-            B, -1,
-            patches_resolution[0], self.inner_patches,
-            patches_resolution[1], self.inner_patches,
-        ).permute(0, 2, 4, 3, 5, 1).reshape(B, num_patches, self.inner_patches, self.inner_patches, -1)
+        x = (
+            self.proj(x)
+            .view(
+                B,
+                -1,
+                patches_resolution[0],
+                self.inner_patches,
+                patches_resolution[1],
+                self.inner_patches,
+            )
+            .permute(0, 2, 4, 3, 5, 1)
+            .reshape(B, num_patches, self.inner_patches, self.inner_patches, -1)
+        )
         if self.norm is not None:
             x = self.norm(x)
         return x
 
 
 class ConvPatchEmbed(nn.Module):
-    def __init__(self, search_size=224,template_size=112, patch_size=16, inner_patches=4, in_chans=3, embed_dim=128, norm_layer=None,
-                 stop_grad_conv1=False):
+    def __init__(
+        self,
+        search_size=224,
+        template_size=112,
+        patch_size=16,
+        inner_patches=4,
+        in_chans=3,
+        embed_dim=128,
+        norm_layer=None,
+        stop_grad_conv1=False,
+    ):
         super().__init__()
         search_size = to_2tuple(search_size)
         template_size = to_2tuple(template_size)
         patch_size = to_2tuple(patch_size)
-        patches_resolution_search = [search_size[0] // patch_size[0], search_size[1] // patch_size[1]]
-        patches_resolution_template = [template_size[0] // patch_size[0], template_size[1] // patch_size[1]]
+        patches_resolution_search = [
+            search_size[0] // patch_size[0],
+            search_size[1] // patch_size[1],
+        ]
+        patches_resolution_template = [
+            template_size[0] // patch_size[0],
+            template_size[1] // patch_size[1],
+        ]
         self.search_size = search_size
         self.template_size = template_size
         self.patch_size = patch_size
         self.stop_grad_conv1 = stop_grad_conv1
         self.inner_patches = inner_patches
-        self.patches_resolution_search = self.patch_shape_search = patches_resolution_search
-        self.num_patches_search = patches_resolution_search[0] * patches_resolution_search[1]
-        self.patches_resolution_template = self.patch_shape_template = patches_resolution_template
-        self.num_patches_template = patches_resolution_template[0] * patches_resolution_template[1]
+        self.patches_resolution_search = self.patch_shape_search = (
+            patches_resolution_search
+        )
+        self.num_patches_search = (
+            patches_resolution_search[0] * patches_resolution_search[1]
+        )
+        self.patches_resolution_template = self.patch_shape_template = (
+            patches_resolution_template
+        )
+        self.num_patches_template = (
+            patches_resolution_template[0] * patches_resolution_template[1]
+        )
 
         self.in_chans = in_chans
         self.embed_dim = embed_dim
 
         conv_size = [size // inner_patches for size in patch_size]
-        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=conv_size, stride=conv_size)
+        self.proj = nn.Conv2d(
+            in_chans, embed_dim, kernel_size=conv_size, stride=conv_size
+        )
         if norm_layer is not None:
             self.norm = norm_layer(embed_dim)
         else:
@@ -528,15 +698,22 @@ class ConvPatchEmbed(nn.Module):
             x = x.detach() * 0.9 + x * 0.1
 
         if bool_masked_pos is not None:
-            x = torch.nn.functional.unfold(x, kernel_size=4, stride=4, padding=0).transpose(1, 2)
+            x = torch.nn.functional.unfold(
+                x, kernel_size=4, stride=4, padding=0
+            ).transpose(1, 2)
 
             seq_len = x.shape[1]
             mask_token = mask_token.expand(B, seq_len, -1)
             w = bool_masked_pos.unsqueeze(-1).type_as(mask_token)
             x = x * (1 - w) + mask_token * w
 
-            x = torch.nn.functional.fold(x.transpose(1, 2), output_size=(H // 4, W // 4), kernel_size=4, padding=0,
-                                         stride=4)
+            x = torch.nn.functional.fold(
+                x.transpose(1, 2),
+                output_size=(H // 4, W // 4),
+                kernel_size=4,
+                padding=0,
+                stride=4,
+            )
         if self.norm is not None:
             x = self.norm(x)
         return x
@@ -579,9 +756,12 @@ class RelativePositionBias(nn.Module):
     def __init__(self, window_size, num_heads):
         super().__init__()
         self.window_size = window_size
-        self.num_relative_distance = (2 * window_size[0] - 1) * (2 * window_size[1] - 1) + 3
+        self.num_relative_distance = (2 * window_size[0] - 1) * (
+            2 * window_size[1] - 1
+        ) + 3
         self.relative_position_bias_table = nn.Parameter(
-            torch.zeros(self.num_relative_distance, num_heads))  # 2*Wh-1 * 2*Ww-1, nH
+            torch.zeros(self.num_relative_distance, num_heads)
+        )  # 2*Wh-1 * 2*Ww-1, nH
         # cls to token & token 2 cls & cls to cls
 
         # get pair-wise relative position index for each token inside the window
@@ -589,13 +769,18 @@ class RelativePositionBias(nn.Module):
         coords_w = torch.arange(window_size[1])
         coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  # 2, Wh, Ww
         coords_flatten = torch.flatten(coords, 1)  # 2, Wh*Ww
-        relative_coords = coords_flatten[:, :, None] - coords_flatten[:, None, :]  # 2, Wh*Ww, Wh*Ww
-        relative_coords = relative_coords.permute(1, 2, 0).contiguous()  # Wh*Ww, Wh*Ww, 2
+        relative_coords = (
+            coords_flatten[:, :, None] - coords_flatten[:, None, :]
+        )  # 2, Wh*Ww, Wh*Ww
+        relative_coords = relative_coords.permute(
+            1, 2, 0
+        ).contiguous()  # Wh*Ww, Wh*Ww, 2
         relative_coords[:, :, 0] += window_size[0] - 1  # shift to start from 0
         relative_coords[:, :, 1] += window_size[1] - 1
         relative_coords[:, :, 0] *= 2 * window_size[1] - 1
-        relative_position_index = \
-            torch.zeros(size=(window_size[0] * window_size[1] + 1,) * 2, dtype=relative_coords.dtype)
+        relative_position_index = torch.zeros(
+            size=(window_size[0] * window_size[1] + 1,) * 2, dtype=relative_coords.dtype
+        )
         relative_position_index[1:, 1:] = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
         relative_position_index[0, 0:] = self.num_relative_distance - 3
         relative_position_index[0:, 0] = self.num_relative_distance - 2
@@ -604,10 +789,13 @@ class RelativePositionBias(nn.Module):
         self.register_buffer("relative_position_index", relative_position_index)
 
     def forward(self):
-        relative_position_bias = \
-            self.relative_position_bias_table[self.relative_position_index.view(-1)].view(
-                self.window_size[0] * self.window_size[1] + 1,
-                self.window_size[0] * self.window_size[1] + 1, -1)  # Wh*Ww,Wh*Ww,nH
+        relative_position_bias = self.relative_position_bias_table[
+            self.relative_position_index.view(-1)
+        ].view(
+            self.window_size[0] * self.window_size[1] + 1,
+            self.window_size[0] * self.window_size[1] + 1,
+            -1,
+        )  # Wh*Ww,Wh*Ww,nH
         return relative_position_bias.permute(2, 0, 1).contiguous()  # nH, Wh*Ww, Wh*Ww
 
 
@@ -635,50 +823,84 @@ class DecoupledRelativePositionBias(nn.Module):
 
         num_tokens = window_size[0] * window_size[1]
 
-        self.relative_position_bias_for_high = nn.Parameter(torch.zeros(self.num_relative_distance[0], num_heads))
-        self.relative_position_bias_for_width = nn.Parameter(torch.zeros(self.num_relative_distance[1], num_heads))
+        self.relative_position_bias_for_high = nn.Parameter(
+            torch.zeros(self.num_relative_distance[0], num_heads)
+        )
+        self.relative_position_bias_for_width = nn.Parameter(
+            torch.zeros(self.num_relative_distance[1], num_heads)
+        )
         # cls to token & token 2 cls & cls to cls
 
-        h_index = _mask_1d_rel_pos_index(window_size[0]).view(
-            window_size[0], 1, window_size[0], 1).expand(-1, window_size[1], -1, window_size[1])
+        h_index = (
+            _mask_1d_rel_pos_index(window_size[0])
+            .view(window_size[0], 1, window_size[0], 1)
+            .expand(-1, window_size[1], -1, window_size[1])
+        )
         h_index = _add_cls_to_index_matrix(h_index, num_tokens, 2 * window_size[0] - 1)
         self.register_buffer("relative_position_high_index", h_index)
 
-        w_index = _mask_1d_rel_pos_index(window_size[1]).view(
-            1, window_size[1], 1, window_size[1]).expand(window_size[0], -1, window_size[0], -1)
+        w_index = (
+            _mask_1d_rel_pos_index(window_size[1])
+            .view(1, window_size[1], 1, window_size[1])
+            .expand(window_size[0], -1, window_size[0], -1)
+        )
         w_index = _add_cls_to_index_matrix(w_index, num_tokens, 2 * window_size[1] - 1)
 
         self.register_buffer("relative_position_width_index", w_index)
 
     def forward(self):
-        relative_position_bias = \
-            F.embedding(input=self.relative_position_high_index, weight=self.relative_position_bias_for_high) + \
-            F.embedding(input=self.relative_position_width_index, weight=self.relative_position_bias_for_width)
+        relative_position_bias = F.embedding(
+            input=self.relative_position_high_index,
+            weight=self.relative_position_bias_for_high,
+        ) + F.embedding(
+            input=self.relative_position_width_index,
+            weight=self.relative_position_bias_for_width,
+        )
         return relative_position_bias.permute(2, 0, 1).contiguous()
 
 
 class Fast_iTPN(nn.Module):
-    def __init__(self, search_size=224,template_size=112, patch_size=16, in_chans=3, embed_dim=512, depth_stage1=3, depth_stage2=3, depth=24,
-                 num_heads=8, bridge_mlp_ratio=3., mlp_ratio=4., qkv_bias=True, qk_scale=None, drop_rate=0.,
-                 attn_drop_rate=0., drop_path_rate=0.0, init_values=None, attn_head_dim=None, norm_layer=nn.LayerNorm,
-                 patch_norm=False, num_classes=1000, use_mean_pooling=False,
-                 init_scale=0.01,
-                 cls_token=False,
-                 grad_ckpt=False,
-                 stop_grad_conv1=False,
-                 use_abs_pos_emb=True,
-                 use_rel_pos_bias=False,
-                 use_shared_rel_pos_bias=False,
-                 use_shared_decoupled_rel_pos_bias=False,
-                 convmlp=False,
-
-                 postnorm=False,
-                 deepnorm=False,
-                 subln=False,
-                 swiglu=False,
-                 naiveswiglu=False,
-                 token_type_indicate=False,
-                 **kwargs):
+    def __init__(
+        self,
+        search_size=224,
+        template_size=112,
+        patch_size=16,
+        in_chans=3,
+        embed_dim=512,
+        depth_stage1=3,
+        depth_stage2=3,
+        depth=24,
+        num_heads=8,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=4.0,
+        qkv_bias=True,
+        qk_scale=None,
+        drop_rate=0.0,
+        attn_drop_rate=0.0,
+        drop_path_rate=0.0,
+        init_values=None,
+        attn_head_dim=None,
+        norm_layer=nn.LayerNorm,
+        patch_norm=False,
+        num_classes=1000,
+        use_mean_pooling=False,
+        init_scale=0.01,
+        cls_token=False,
+        grad_ckpt=False,
+        stop_grad_conv1=False,
+        use_abs_pos_emb=True,
+        use_rel_pos_bias=False,
+        use_shared_rel_pos_bias=False,
+        use_shared_decoupled_rel_pos_bias=False,
+        convmlp=False,
+        postnorm=False,
+        deepnorm=False,
+        subln=False,
+        swiglu=False,
+        naiveswiglu=False,
+        token_type_indicate=False,
+        **kwargs
+    ):
         super().__init__()
         self.search_size = search_size
         self.template_size = template_size
@@ -698,17 +920,26 @@ class Fast_iTPN(nn.Module):
         self.use_shared_decoupled_rel_pos_bias = use_shared_decoupled_rel_pos_bias
         self.use_decoupled_rel_pos_bias = False
 
-        mlvl_dims = {'4': embed_dim // 4, '8': embed_dim // 2, '16': embed_dim}
+        mlvl_dims = {"4": embed_dim // 4, "8": embed_dim // 2, "16": embed_dim}
         # split image into non-overlapping patches
         if convmlp:
             self.patch_embed = ConvPatchEmbed(
-                search_size=search_size,template_size=template_size, patch_size=patch_size, in_chans=in_chans, embed_dim=mlvl_dims['4'],
+                search_size=search_size,
+                template_size=template_size,
+                patch_size=patch_size,
+                in_chans=in_chans,
+                embed_dim=mlvl_dims["4"],
                 stop_grad_conv1=stop_grad_conv1,
-                norm_layer=norm_layer if patch_norm else None)
+                norm_layer=norm_layer if patch_norm else None,
+            )
         else:
             self.patch_embed = PatchEmbed(
-                img_size=search_size, patch_size=patch_size, in_chans=in_chans, embed_dim=mlvl_dims['4'],
-                norm_layer=norm_layer if patch_norm else None)
+                img_size=search_size,
+                patch_size=patch_size,
+                in_chans=in_chans,
+                embed_dim=mlvl_dims["4"],
+                norm_layer=norm_layer if patch_norm else None,
+            )
         self.num_patches_search = self.patch_embed.num_patches_search
         self.num_patches_template = self.patch_embed.num_patches_template
         if cls_token:
@@ -717,9 +948,17 @@ class Fast_iTPN(nn.Module):
             self.cls_token = None
         if use_abs_pos_emb:
             if cls_token:
-                self.pos_embed = nn.Parameter(torch.zeros(1, num_patches + 1, embed_dim))
+                self.pos_embed = nn.Parameter(
+                    torch.zeros(1, num_patches + 1, embed_dim)
+                )
             else:
-                self.pos_embed = nn.Parameter(torch.zeros(1, self.num_patches_search+self.num_patches_template, embed_dim))
+                self.pos_embed = nn.Parameter(
+                    torch.zeros(
+                        1,
+                        self.num_patches_search + self.num_patches_template,
+                        embed_dim,
+                    )
+                )
         else:
             self.pos_embed = None
         # indicate for tracking
@@ -731,14 +970,17 @@ class Fast_iTPN(nn.Module):
         self.pos_drop = nn.Dropout(p=drop_rate)
 
         if use_shared_rel_pos_bias:
-            self.rel_pos_bias = RelativePositionBias(window_size=self.patch_embed.patch_shape, num_heads=num_heads)
+            self.rel_pos_bias = RelativePositionBias(
+                window_size=self.patch_embed.patch_shape, num_heads=num_heads
+            )
         else:
             self.rel_pos_bias = None
 
         if use_shared_decoupled_rel_pos_bias:
             assert self.rel_pos_bias is None
-            self.rel_pos_bias = DecoupledRelativePositionBias(window_size=self.patch_embed.patch_shape,
-                                                              num_heads=num_heads)
+            self.rel_pos_bias = DecoupledRelativePositionBias(
+                window_size=self.patch_embed.patch_shape, num_heads=num_heads
+            )
 
         self.subln = subln
         self.swiglu = swiglu
@@ -772,12 +1014,12 @@ class Fast_iTPN(nn.Module):
         self.head = nn.Identity()
 
         if self.pos_embed is not None:
-            trunc_normal_(self.pos_embed, std=.02)
+            trunc_normal_(self.pos_embed, std=0.02)
         if self.cls_token is not None:
-            trunc_normal_(self.cls_token, std=.02)
+            trunc_normal_(self.cls_token, std=0.02)
 
         if isinstance(self.head, nn.Linear):
-            trunc_normal_(self.head.weight, std=.02)
+            trunc_normal_(self.head.weight, std=0.02)
 
         self.apply(self._init_weights)
 
@@ -785,138 +1027,159 @@ class Fast_iTPN(nn.Module):
             self.head.weight.data.mul_(init_scale)
             self.head.bias.data.mul_(init_scale)
 
-    def build_blocks(self,
-                     depths=[3, 3, 24],
-                     dims={'4': 128 // 4, '8': 256, '16': 512},
-                     num_heads=8,
-                     bridge_mlp_ratio=3.,
-                     mlp_ratio=4.0,
-                     qkv_bias=True,
-                     qk_scale=None,
-                     window_size=None,
-                     drop=0.,
-                     attn_drop=0.,
-                     drop_path_rate=0.,
-                     norm_layer=nn.LayerNorm,
-                     init_values=0.,
-                     attn_head_dim=None,
-                     postnorm=False,
-                     deepnorm=False,
-                     subln=False,
-                     swiglu=False,
-                     naiveswiglu=False,
-                     convmlp=False,
-                     ):
-        dpr = iter(x.item() for x in torch.linspace(0, drop_path_rate, depths[0] + depths[1] + depths[2]))
+    def build_blocks(
+        self,
+        depths=[3, 3, 24],
+        dims={"4": 128 // 4, "8": 256, "16": 512},
+        num_heads=8,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=4.0,
+        qkv_bias=True,
+        qk_scale=None,
+        window_size=None,
+        drop=0.0,
+        attn_drop=0.0,
+        drop_path_rate=0.0,
+        norm_layer=nn.LayerNorm,
+        init_values=0.0,
+        attn_head_dim=None,
+        postnorm=False,
+        deepnorm=False,
+        subln=False,
+        swiglu=False,
+        naiveswiglu=False,
+        convmlp=False,
+    ):
+        dpr = iter(
+            x.item()
+            for x in torch.linspace(
+                0, drop_path_rate, depths[0] + depths[1] + depths[2]
+            )
+        )
 
         self.blocks = nn.ModuleList()
 
         if convmlp:
-            self.blocks.extend([
-                ConvMlpBlock(
-                    dim=dims['4'],
-                    mlp_ratio=bridge_mlp_ratio,
-                    drop_path=next(dpr),
-                    norm_layer=norm_layer,
-                    init_values=0.,
-                    depth=depths[-1],
-                    postnorm=postnorm,
-                    deepnorm=deepnorm,
-                    subln=subln,
-                    swiglu=False,
-                    naiveswiglu=False,
-                ) for _ in range(depths[0])
-            ])
-            self.blocks.append(ConvPatchMerge(dims['4'], norm_layer))
-            self.blocks.extend([
-                ConvMlpBlock(
-                    dim=dims['8'],
-                    mlp_ratio=bridge_mlp_ratio,
-                    drop_path=next(dpr),
-                    norm_layer=norm_layer,
-                    init_values=0.,
-                    depth=depths[-1],
-                    postnorm=postnorm,
-                    deepnorm=deepnorm,
-                    subln=subln,
-                    swiglu=False,
-                    naiveswiglu=False,
-                ) for _ in range(depths[1])
-            ])
-            self.blocks.append(ConvPatchMerge(dims['8'], norm_layer))
+            self.blocks.extend(
+                [
+                    ConvMlpBlock(
+                        dim=dims["4"],
+                        mlp_ratio=bridge_mlp_ratio,
+                        drop_path=next(dpr),
+                        norm_layer=norm_layer,
+                        init_values=0.0,
+                        depth=depths[-1],
+                        postnorm=postnorm,
+                        deepnorm=deepnorm,
+                        subln=subln,
+                        swiglu=False,
+                        naiveswiglu=False,
+                    )
+                    for _ in range(depths[0])
+                ]
+            )
+            self.blocks.append(ConvPatchMerge(dims["4"], norm_layer))
+            self.blocks.extend(
+                [
+                    ConvMlpBlock(
+                        dim=dims["8"],
+                        mlp_ratio=bridge_mlp_ratio,
+                        drop_path=next(dpr),
+                        norm_layer=norm_layer,
+                        init_values=0.0,
+                        depth=depths[-1],
+                        postnorm=postnorm,
+                        deepnorm=deepnorm,
+                        subln=subln,
+                        swiglu=False,
+                        naiveswiglu=False,
+                    )
+                    for _ in range(depths[1])
+                ]
+            )
+            self.blocks.append(ConvPatchMerge(dims["8"], norm_layer))
         else:
-            self.blocks.extend([
-                Block(
-                    dim=dims['4'],
-                    num_heads=0,
-                    mlp_ratio=bridge_mlp_ratio,
-                    qkv_bias=qkv_bias,
-                    qk_scale=qk_scale,
-                    drop=drop,
-                    attn_drop=attn_drop,
-                    drop_path=next(dpr),
-                    norm_layer=norm_layer,
-                    init_values=init_values,
-                    window_size=window_size,
-                    depth=depths[-1],
-                    postnorm=postnorm,
-                    deepnorm=deepnorm,
-                    subln=subln,
-                    swiglu=swiglu,
-                    naiveswiglu=naiveswiglu,
-                ) for _ in range(depths[0])
-            ])
-            self.blocks.append(PatchMerge(dims['4'], norm_layer))
-            self.blocks.extend([
-                Block(
-                    dim=dims['8'],
-                    num_heads=0,
-                    mlp_ratio=bridge_mlp_ratio,
-                    qkv_bias=qkv_bias,
-                    qk_scale=qk_scale,
-                    drop=drop,
-                    attn_drop=attn_drop,
-                    drop_path=next(dpr),
-                    norm_layer=norm_layer,
-                    init_values=init_values,
-                    window_size=window_size,
-                    depth=depths[-1],
-                    postnorm=postnorm,
-                    deepnorm=deepnorm,
-                    subln=subln,
-                    swiglu=swiglu,
-                    naiveswiglu=naiveswiglu,
-                ) for _ in range(depths[1])
-            ])
-            self.blocks.append(PatchMerge(dims['8'], norm_layer))
+            self.blocks.extend(
+                [
+                    Block(
+                        dim=dims["4"],
+                        num_heads=0,
+                        mlp_ratio=bridge_mlp_ratio,
+                        qkv_bias=qkv_bias,
+                        qk_scale=qk_scale,
+                        drop=drop,
+                        attn_drop=attn_drop,
+                        drop_path=next(dpr),
+                        norm_layer=norm_layer,
+                        init_values=init_values,
+                        window_size=window_size,
+                        depth=depths[-1],
+                        postnorm=postnorm,
+                        deepnorm=deepnorm,
+                        subln=subln,
+                        swiglu=swiglu,
+                        naiveswiglu=naiveswiglu,
+                    )
+                    for _ in range(depths[0])
+                ]
+            )
+            self.blocks.append(PatchMerge(dims["4"], norm_layer))
+            self.blocks.extend(
+                [
+                    Block(
+                        dim=dims["8"],
+                        num_heads=0,
+                        mlp_ratio=bridge_mlp_ratio,
+                        qkv_bias=qkv_bias,
+                        qk_scale=qk_scale,
+                        drop=drop,
+                        attn_drop=attn_drop,
+                        drop_path=next(dpr),
+                        norm_layer=norm_layer,
+                        init_values=init_values,
+                        window_size=window_size,
+                        depth=depths[-1],
+                        postnorm=postnorm,
+                        deepnorm=deepnorm,
+                        subln=subln,
+                        swiglu=swiglu,
+                        naiveswiglu=naiveswiglu,
+                    )
+                    for _ in range(depths[1])
+                ]
+            )
+            self.blocks.append(PatchMerge(dims["8"], norm_layer))
 
         ######### stage 3 ########
-        self.blocks.extend([
-            Block(
-                dim=dims['16'],
-                num_heads=num_heads,
-                mlp_ratio=mlp_ratio,
-                qkv_bias=qkv_bias,
-                qk_scale=qk_scale,
-                drop=drop,
-                attn_drop=attn_drop,
-                drop_path=next(dpr),
-                norm_layer=norm_layer,
-                init_values=init_values,
-                window_size=window_size,
-                attn_head_dim=attn_head_dim,
-                depth=depths[-1],
-                postnorm=postnorm,
-                deepnorm=deepnorm,
-                subln=subln,
-                swiglu=swiglu,
-                naiveswiglu=naiveswiglu,
-            ) for _ in range(depths[2])
-        ])
+        self.blocks.extend(
+            [
+                Block(
+                    dim=dims["16"],
+                    num_heads=num_heads,
+                    mlp_ratio=mlp_ratio,
+                    qkv_bias=qkv_bias,
+                    qk_scale=qk_scale,
+                    drop=drop,
+                    attn_drop=attn_drop,
+                    drop_path=next(dpr),
+                    norm_layer=norm_layer,
+                    init_values=init_values,
+                    window_size=window_size,
+                    attn_head_dim=attn_head_dim,
+                    depth=depths[-1],
+                    postnorm=postnorm,
+                    deepnorm=deepnorm,
+                    subln=subln,
+                    swiglu=swiglu,
+                    naiveswiglu=naiveswiglu,
+                )
+                for _ in range(depths[2])
+            ]
+        )
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=.02)
+            trunc_normal_(m.weight, std=0.02)
             if isinstance(m, nn.Linear) and m.bias is not None:
                 nn.init.constant_(m.bias, 0)
         elif isinstance(m, nn.LayerNorm):
@@ -929,19 +1192,21 @@ class Fast_iTPN(nn.Module):
     @torch.jit.ignore
     def no_weight_decay(self):
         if self.cls_token is not None:
-            return {'pos_embed', 'cls_token'}
-        return {'pos_embed'}
+            return {"pos_embed", "cls_token"}
+        return {"pos_embed"}
 
     def get_classifer(self):
         return self.head
 
-    def reset_classifier(self, num_classes, global_pool=''):
+    def reset_classifier(self, num_classes, global_pool=""):
         self.num_classes = num_classes
-        self.head = nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
+        self.head = (
+            nn.Linear(self.embed_dim, num_classes) if num_classes > 0 else nn.Identity()
+        )
 
     @torch.jit.ignore
     def no_weight_decay_keywords(self):
-        return {'relative_position_bias_table'}
+        return {"relative_position_bias_table"}
 
     def create_mask(self, image, image_anno):
         height = image.size(2)
@@ -962,7 +1227,7 @@ class Fast_iTPN(nn.Module):
         y_mask = ((y_indices >= y0) & (y_indices < y0 + h)).float()
 
         # Combine x and y masks to get final mask
-        mask = x_mask.unsqueeze(1) * y_mask.unsqueeze(2) # (b,h,w)
+        mask = x_mask.unsqueeze(1) * y_mask.unsqueeze(2)  # (b,h,w)
 
         return mask
 
@@ -979,12 +1244,34 @@ class Fast_iTPN(nn.Module):
         if self.token_type_indicate:
             # generate the indicate_embeddings for z
             z_indicate_mask = self.create_mask(z, z_anno)
-            z_indicate_mask = z_indicate_mask.unfold(1, self.patch_size, self.patch_size).unfold(2, self.patch_size, self.patch_size) # to match the patch embedding
-            z_indicate_mask = z_indicate_mask.mean(dim=(3,4)).flatten(1) # elements are in [0,1], float, near to 1 indicates near to foreground, near to 0 indicates near to background
-            template_background_token = self.template_background_token.unsqueeze(0).unsqueeze(1).expand(z_indicate_mask.size(0), z_indicate_mask.size(1), self.embed_dim)
-            template_foreground_token = self.template_foreground_token.unsqueeze(0).unsqueeze(1).expand(z_indicate_mask.size(0), z_indicate_mask.size(1), self.embed_dim)
-            weighted_foreground = template_foreground_token * z_indicate_mask.unsqueeze(-1)
-            weighted_background = template_background_token * (1 - z_indicate_mask.unsqueeze(-1))
+            z_indicate_mask = z_indicate_mask.unfold(
+                1, self.patch_size, self.patch_size
+            ).unfold(
+                2, self.patch_size, self.patch_size
+            )  # to match the patch embedding
+            z_indicate_mask = z_indicate_mask.mean(dim=(3, 4)).flatten(
+                1
+            )  # elements are in [0,1], float, near to 1 indicates near to foreground, near to 0 indicates near to background
+            template_background_token = (
+                self.template_background_token.unsqueeze(0)
+                .unsqueeze(1)
+                .expand(
+                    z_indicate_mask.size(0), z_indicate_mask.size(1), self.embed_dim
+                )
+            )
+            template_foreground_token = (
+                self.template_foreground_token.unsqueeze(0)
+                .unsqueeze(1)
+                .expand(
+                    z_indicate_mask.size(0), z_indicate_mask.size(1), self.embed_dim
+                )
+            )
+            weighted_foreground = template_foreground_token * z_indicate_mask.unsqueeze(
+                -1
+            )
+            weighted_background = template_background_token * (
+                1 - z_indicate_mask.unsqueeze(-1)
+            )
             z_indicate = weighted_foreground + weighted_background
 
         z = self.patch_embed(z)
@@ -993,9 +1280,17 @@ class Fast_iTPN(nn.Module):
         if not self.convmlp and self.stop_grad_conv1:
             x = x.detach() * 0.9 + x * 0.1
 
-        for blk in self.blocks[:-self.num_main_blocks]:
-            z = checkpoint.checkpoint(blk, z, use_reentrant=False) if self.grad_ckpt else blk(z)  # bn,c,h,w
-            x = checkpoint.checkpoint(blk, x, use_reentrant=False) if self.grad_ckpt else blk(x)  # bn,c,h,w
+        for blk in self.blocks[: -self.num_main_blocks]:
+            z = (
+                checkpoint.checkpoint(blk, z, use_reentrant=False)
+                if self.grad_ckpt
+                else blk(z)
+            )  # bn,c,h,w
+            x = (
+                checkpoint.checkpoint(blk, x, use_reentrant=False)
+                if self.grad_ckpt
+                else blk(x)
+            )  # bn,c,h,w
 
         x = x.flatten(2).transpose(1, 2)  # bn,l,c
         z = z.flatten(2).transpose(1, 2)
@@ -1004,16 +1299,19 @@ class Fast_iTPN(nn.Module):
             cls_tokens = self.cls_token.expand(B, -1, -1)
             x = torch.cat([cls_tokens, x], dim=1)
         if self.pos_embed is not None:
-            x = x + self.pos_embed[:, :self.num_patches_search, :]
-            z = z + self.pos_embed[:, self.num_patches_search:, :]
+            x = x + self.pos_embed[:, : self.num_patches_search, :]
+            z = z + self.pos_embed[:, self.num_patches_search :, :]
 
         if self.token_type_indicate:
             # generate the indicate_embeddings for x
-            x_indicate = self.search_token.unsqueeze(0).unsqueeze(1).expand(x.size(0), x.size(1), self.embed_dim)
+            x_indicate = (
+                self.search_token.unsqueeze(0)
+                .unsqueeze(1)
+                .expand(x.size(0), x.size(1), self.embed_dim)
+            )
             # add indicate_embeddings to z and x
             x = x + x_indicate
             z = z + z_indicate
-
 
         z = z.view(-1, num_template, z.size(-2), z.size(-1))  # b,n,l,c
         z = z.reshape(z.size(0), -1, z.size(-1))  # b,l,c
@@ -1022,15 +1320,18 @@ class Fast_iTPN(nn.Module):
         xz = torch.cat([x, z], dim=1)
         return xz
 
-    def forward_features(self, template_list, search_list,template_anno_list):
-        xz = self.prepare_tokens_with_masks(template_list, search_list, template_anno_list)
+    def forward_features(self, template_list, search_list, template_anno_list):
+        xz = self.prepare_tokens_with_masks(
+            template_list, search_list, template_anno_list
+        )
         xz = self.pos_drop(xz)
         return xz
 
-    def forward(self, template_list,search_list,template_anno_list):
-        xz = self.forward_features(template_list,search_list,template_anno_list)
+    def forward(self, template_list, search_list, template_anno_list):
+        xz = self.forward_features(template_list, search_list, template_anno_list)
         # x = self.head(x)
         return xz
+
 
 def load_pretrained(model, checkpoint, pos_type):
     if "module" in checkpoint.keys():
@@ -1040,26 +1341,32 @@ def load_pretrained(model, checkpoint, pos_type):
         state_dict = checkpoint["model"]
     else:
         state_dict = checkpoint
-    pe = state_dict['pos_embed'].float()
+    pe = state_dict["pos_embed"].float()
     b_pe, hw_pe, c_pe = pe.shape
     side_pe = int(math.sqrt(hw_pe))
     side_num_patches_search = int(math.sqrt(model.num_patches_search))
     side_num_patches_template = int(math.sqrt(model.num_patches_template))
-    pe_2D = pe.reshape([b_pe, side_pe, side_pe, c_pe]).permute([0,3,1,2])  #b,c,h,w
+    pe_2D = pe.reshape([b_pe, side_pe, side_pe, c_pe]).permute([0, 3, 1, 2])  # b,c,h,w
 
     def adjust_pe(pe_2D, side_pe, side_new):
-        if pos_type == 'index':
+        if pos_type == "index":
             if side_pe < side_new:
-                pe_new_2D = nn.functional.interpolate(pe_2D, [side_new, side_new], align_corners=True, mode='bicubic')
-                warnings.warn('The resolution is too large, the POS_TYPE has been modified to \'interpolate\'')
+                pe_new_2D = nn.functional.interpolate(
+                    pe_2D, [side_new, side_new], align_corners=True, mode="bicubic"
+                )
+                warnings.warn(
+                    "The resolution is too large, the POS_TYPE has been modified to 'interpolate'"
+                )
             else:
-                pe_new_2D = pe_2D[:,:,0:side_new,0:side_new]
+                pe_new_2D = pe_2D[:, :, 0:side_new, 0:side_new]
             pe_new = torch.flatten(pe_new_2D.permute([0, 2, 3, 1]), 1, 2)
-        elif pos_type == 'interpolate':
-            pe_new_2D = nn.functional.interpolate(pe_2D, [side_new, side_new], align_corners=True, mode='bicubic')
-            pe_new = torch.flatten(pe_new_2D.permute([0, 2, 3, 1]), 1, 2)#b,l,c
+        elif pos_type == "interpolate":
+            pe_new_2D = nn.functional.interpolate(
+                pe_2D, [side_new, side_new], align_corners=True, mode="bicubic"
+            )
+            pe_new = torch.flatten(pe_new_2D.permute([0, 2, 3, 1]), 1, 2)  # b,l,c
         else:
-            raise NotImplementedError('The POS_TYPE should be index or interpolate')
+            raise NotImplementedError("The POS_TYPE should be index or interpolate")
         return pe_new
 
     if side_pe != side_num_patches_search:
@@ -1071,8 +1378,12 @@ def load_pretrained(model, checkpoint, pos_type):
     else:
         pe_t = pe
     pe_xz = torch.cat((pe_s, pe_t), dim=1)
-    state_dict['pos_embed'] = pe_xz
-    auxiliary_keys = ["template_background_token", "template_foreground_token", "search_token"]
+    state_dict["pos_embed"] = pe_xz
+    auxiliary_keys = [
+        "template_background_token",
+        "template_foreground_token",
+        "search_token",
+    ]
     for key in auxiliary_keys:
         if (key in model.state_dict().keys()) and (key not in state_dict.keys()):
             state_dict[key] = model.state_dict()[key]
@@ -1083,70 +1394,109 @@ def load_pretrained(model, checkpoint, pos_type):
 @register_model
 def fastitpnt(pretrained=False, pos_type="interpolate", pretrain_type="", **kwargs):
     model = Fast_iTPN(
-        patch_size=16, embed_dim=384, depth_stage1=1, depth_stage2=1, depth=12, num_heads=6, bridge_mlp_ratio=3.,
-        mlp_ratio=3., qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        patch_size=16,
+        embed_dim=384,
+        depth_stage1=1,
+        depth_stage2=1,
+        depth=12,
+        num_heads=6,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=3.0,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
         convmlp=True,
         naiveswiglu=True,
         subln=True,
         pos_type=pos_type,
-        **kwargs)
+        **kwargs
+    )
     model.default_cfg = _cfg()
     pretrain_path = current_file_path + pretrain_type
     if pretrained:
-        checkpoint = torch.load(pretrain_path, map_location="cpu")
-        load_pretrained(model,checkpoint,pos_type)
+        # checkpoint = torch.load(pretrain_path, map_location="cpu")
+        checkpoint = torch.load(pretrain_type, map_location="cpu")
+        load_pretrained(model, checkpoint, pos_type)
     return model
 
 
 @register_model
 def fastitpns(pretrained=False, pos_type="interpolate", pretrain_type="", **kwargs):
     model = Fast_iTPN(
-        patch_size=16, embed_dim=384, depth_stage1=2, depth_stage2=2, depth=20, num_heads=6, bridge_mlp_ratio=3.,
-        mlp_ratio=3., qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        patch_size=16,
+        embed_dim=384,
+        depth_stage1=2,
+        depth_stage2=2,
+        depth=20,
+        num_heads=6,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=3.0,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
         convmlp=True,
         naiveswiglu=True,
         subln=True,
         pos_type=pos_type,
-        **kwargs)
-    model.default_cfg = _cfg()
-    pretrain_path = current_file_path +  pretrain_type
-    if pretrained:
-        checkpoint = torch.load(pretrain_path, map_location="cpu")
-        load_pretrained(model,checkpoint,pos_type)
-    return model
-
-@register_model
-def fastitpnb(pretrained=False,pos_type="interpolate",pretrain_type="",**kwargs):
-    model = Fast_iTPN(
-        patch_size=16, embed_dim=512, depth_stage1=3, depth_stage2=3, depth=24, num_heads=8, bridge_mlp_ratio=3.,
-        mlp_ratio=3., qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6),
-        convmlp=True,
-        naiveswiglu=True,
-        subln=True,
-        pos_type = pos_type,
-        **kwargs)
+        **kwargs
+    )
     model.default_cfg = _cfg()
     pretrain_path = current_file_path + pretrain_type
     if pretrained:
         checkpoint = torch.load(pretrain_path, map_location="cpu")
-        load_pretrained(model,checkpoint,pos_type)
+        load_pretrained(model, checkpoint, pos_type)
+    return model
+
+
+@register_model
+def fastitpnb(pretrained=False, pos_type="interpolate", pretrain_type="", **kwargs):
+    model = Fast_iTPN(
+        patch_size=16,
+        embed_dim=512,
+        depth_stage1=3,
+        depth_stage2=3,
+        depth=24,
+        num_heads=8,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=3.0,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        convmlp=True,
+        naiveswiglu=True,
+        subln=True,
+        pos_type=pos_type,
+        **kwargs
+    )
+    model.default_cfg = _cfg()
+    pretrain_path = current_file_path + pretrain_type
+    if pretrained:
+        # checkpoint = torch.load(pretrain_path, map_location="cpu")
+        checkpoint = torch.load(pretrain_type, map_location="cpu")
+        load_pretrained(model, checkpoint, pos_type)
         # model.load_state_dict(checkpoint["model"])
     return model
 
 
 @register_model
-def fastitpnl(pretrained=False,pos_type="interpolate",pretrain_type="", **kwargs):
+def fastitpnl(pretrained=False, pos_type="interpolate", pretrain_type="", **kwargs):
     model = Fast_iTPN(
-        patch_size=16, embed_dim=768, depth_stage1=2, depth_stage2=2, depth=40, num_heads=12, bridge_mlp_ratio=3.,
-        mlp_ratio=3., qkv_bias=True, norm_layer=partial(nn.LayerNorm, eps=1e-6),
+        patch_size=16,
+        embed_dim=768,
+        depth_stage1=2,
+        depth_stage2=2,
+        depth=40,
+        num_heads=12,
+        bridge_mlp_ratio=3.0,
+        mlp_ratio=3.0,
+        qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6),
         convmlp=True,
         naiveswiglu=True,
         subln=True,
         pos_type="interpolate",
-        **kwargs)
+        **kwargs
+    )
     model.default_cfg = _cfg()
     pretrain_path = current_file_path + pretrain_type
     if pretrained:
         checkpoint = torch.load(pretrain_path, map_location="cpu")
-        load_pretrained(model,checkpoint,pos_type)
+        load_pretrained(model, checkpoint, pos_type)
     return model
