@@ -116,12 +116,10 @@ class SlyMCITracker(BBoxTracking):
         self.tracker = MCITracker(params=model_params, device=device)
 
     def initialize(self, init_rgb_image: np.ndarray, target_bbox: PredictionBBox):
-        top, left, bottom, right = target_bbox.bbox_tlbr
-        width = right - left + 1
-        height = bottom - top + 1
-        center_x = (left + right) // 2
-        center_y = (top + bottom) // 2
-        init_bbox = [center_x, center_y, width, height]
+        y1, x1, y2, x2 = target_bbox.bbox_tlbr
+        w = abs(x2 - x1)
+        h = abs(y2 - y1)
+        init_bbox = [x1, y1, w, h]
         init_info = {"init_bbox": init_bbox}
         self.tracker.initialize(init_rgb_image, init_info)
 
@@ -136,13 +134,21 @@ class SlyMCITracker(BBoxTracking):
         class_name = target_bbox.class_name
         self.tracker.update_settings(settings)
         output = self.tracker.track(rgb_image)
-        center_x, center_y, width, height = [int(s) for s in output["target_bbox"]]
-        top = center_y - (height / 2)
-        left = center_x - (width / 2)
-        bottom = center_y + (height / 2)
-        right = center_x + (width / 2)
-        tlbr = [int(top), int(left), int(bottom), int(right)]
+        x, y, width, height = [int(s) for s in output["target_bbox"]]
+
+        max_h, max_w, _ = rgb_image.shape
+        tlbr = self._build_bbox_params(x, y, width, height, max_w, max_h)
+
         return PredictionBBox(class_name, tlbr, None)
+
+    def _build_bbox_params(
+        self, x: float, y: float, w: float, h: float, max_w: int, max_h: int
+    ):
+        top = min(max(0, int(y)), max_h - 1)
+        left = min(max(0, int(x)), max_w - 1)
+        bottom = min(max(0, int(y + h)), max_h - 1)
+        right = min(max(0, int(x + w)), max_w - 1)
+        return [top, left, bottom, right]
 
 
 create_default_local_file_ITP_train(workspace_dir="./", data_dir="./")
