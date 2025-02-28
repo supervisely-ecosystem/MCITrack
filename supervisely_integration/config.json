@@ -1,0 +1,34 @@
+{
+    "name": "MCITrack object tracking",
+    "type": "app",
+    "version": "2.0.0",
+    "categories": [
+        "neural network",
+        "videos",
+        "detection & tracking",
+        "serve"
+    ],
+    "description": "Deploy MCITrack as REST API service",
+    "docker_image": "supervisely/mcitrack:1.0.0",
+    "entrypoint": "python -m uvicorn main:model.app --app-dir ./supervisely_integration/src --host 0.0.0.0 --port 8000 --ws websockets",
+    "port": 8000,
+    "task_location": "application_sessions",
+    "isolate": true,
+    "need_gpu": true,
+    "instance_version": "6.12.28",
+    "restart_policy": "on_error",
+    "session_tags": [
+        "sly_video_tracking",
+        "scalable"
+    ],
+    "community_agent": false,
+    "allowed_shapes": [
+        "rectangle"
+    ],
+    "access_restriction": [
+        {
+            "instance": "community_free",
+            "message": "The best object trackers are already deployed in the Supervisely Cloud and are available for auto-labeling to all platform users. The number of API calls and the ability to run this app on your own agent (GPU) are limited for Free accounts. To increase usage limits or run the app on your GPU, switch to the <a href=\"/billing\">Pro</a> plan or request the <a href=\"https://supervisely.com/contact-us/\" target=\"_blank\">Enterprise</a> Edition."
+        }
+    ]
+}
