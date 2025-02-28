@@ -30,5 +30,7 @@
             "instance": "community_free",
             "message": "The best object trackers are already deployed in the Supervisely Cloud and are available for auto-labeling to all platform users. The number of API calls and the ability to run this app on your own agent (GPU) are limited for Free accounts. To increase usage limits or run the app on your GPU, switch to the <a href=\"/billing\">Pro</a> plan or request the <a href=\"https://supervisely.com/contact-us/\" target=\"_blank\">Enterprise</a> Edition."
         }
-    ]
+    ],
+    "icon": "https://github.com/user-attachments/assets/45d485fa-ba3e-4ea7-838e-605156981f74",
+    "poster": "https://github.com/user-attachments/assets/15590a86-55e2-49e0-a060-e7c8d718e900"
 }

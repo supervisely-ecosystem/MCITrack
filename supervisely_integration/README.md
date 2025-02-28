@@ -1,3 +1,8 @@
+
+<div align="center" markdown>
+
+<img src="https://github.com/user-attachments/assets/15590a86-55e2-49e0-a060-e7c8d718e900" style="width: 70%;"/>
+
 # MCITrack object tracking
 
 <p align="center">
