@@ -1,7 +1,7 @@
 
 <div align="center" markdown>
 
-<img src="https://github.com/user-attachments/assets/15590a86-55e2-49e0-a060-e7c8d718e900" style="width: 70%;"/>
+<img src="https://github.com/user-attachments/assets/1cb32840-6096-48aa-8b2b-1663d822a72c" style="width: 70%;"/>
 
 # MCITrack object tracking
 
