@@ -1441,7 +1441,8 @@ def fastitpns(pretrained=False, pos_type="interpolate", pretrain_type="", **kwar
     model.default_cfg = _cfg()
     pretrain_path = current_file_path + pretrain_type
     if pretrained:
-        checkpoint = torch.load(pretrain_path, map_location="cpu")
+        # checkpoint = torch.load(pretrain_path, map_location="cpu")
+        checkpoint = torch.load(pretrain_type, map_location="cpu")
         load_pretrained(model, checkpoint, pos_type)
     return model
 
@@ -1497,6 +1498,7 @@ def fastitpnl(pretrained=False, pos_type="interpolate", pretrain_type="", **kwar
     model.default_cfg = _cfg()
     pretrain_path = current_file_path + pretrain_type
     if pretrained:
-        checkpoint = torch.load(pretrain_path, map_location="cpu")
+        # checkpoint = torch.load(pretrain_path, map_location="cpu")
+        checkpoint = torch.load(pretrain_type, map_location="cpu")
         load_pretrained(model, checkpoint, pos_type)
     return model
