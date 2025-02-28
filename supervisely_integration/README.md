@@ -3,7 +3,7 @@
 
 <img src="https://github.com/user-attachments/assets/1cb32840-6096-48aa-8b2b-1663d822a72c" style="width: 70%;"/>
 
-# MCITrack object tracking
+# MCITrack Object Tracking
 
 <p align="center">
   <a href="#Overview">Overview</a> •
@@ -16,8 +16,8 @@
 [![](https://img.shields.io/badge/supervisely-ecosystem-brightgreen)](https://ecosystem.supervisely.com/apps/supervisely-ecosystem/mcitrack-object-tracking)
 [![](https://img.shields.io/badge/slack-chat-green.svg?logo=slack)](https://supervisely.com/slack)
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/supervisely-ecosystem/mcitrack)
-[![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/mcitrack-object-tracking.png)](https://supervisely.com)
-[![runs](https://app.supervisely.com/img/badges/runs/supervisely-ecosystem/mcitrack-object-tracking.png)](https://supervisely.com)
+[![views](https://app.supervisely.com/img/badges/views/supervisely-ecosystem/mcitrack/supervisely_integration.png)](https://supervisely.com)
+[![runs](https://app.supervisely.com/img/badges/runs/supervisely-ecosystem/mcitrack/supervisely_integration.png)](https://supervisely.com)
 
 </div>
 
