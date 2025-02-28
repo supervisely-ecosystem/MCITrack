@@ -10,7 +10,7 @@
     ],
     "description": "Deploy MCITrack as REST API service",
     "docker_image": "supervisely/mcitrack:1.0.0",
-    "entrypoint": "python -m uvicorn main:model.app --app-dir ./supervisely_integration/src --host 0.0.0.0 --port 8000 --ws websockets",
+    "entrypoint": "python3 -m uvicorn main:model.app --app-dir ./supervisely_integration/src --host 0.0.0.0 --port 8000 --ws websockets",
     "port": 8000,
     "task_location": "application_sessions",
     "isolate": true,
