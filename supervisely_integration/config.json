@@ -15,6 +15,9 @@
     "task_location": "application_sessions",
     "isolate": true,
     "need_gpu": true,
+    "modal_template_state": {
+        "autostart": true
+    },
     "instance_version": "6.12.23",
     "restart_policy": "on_error",
     "session_tags": [
