@@ -13,7 +13,7 @@ RUN apt-get update
 RUN apt-get install ffmpeg libgeos-dev libsm6 libxext6 libexiv2-dev libxrender-dev libboost-all-dev -y
 RUN pip3 install opencv-python
 
-RUN python3 -m pip install supervisely==6.73.286
+RUN python3 -m pip install supervisely==6.73.369
 
 RUN pip3 install pandas==2.1.4
 RUN pip3 install pycocotools==2.0.8
@@ -40,4 +40,4 @@ RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_base.pth.tar -O /weights/MCITRACK_base.pth.tar
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_large.pth.tar -O /weights/MCITRACK_large.pth.tar
 
-LABEL python_sdk_version=6.73.286
+LABEL python_sdk_version=6.73.369
