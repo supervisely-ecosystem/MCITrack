@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libexiv2-dev \
     libxrender-dev \
-    libboost-all-devel \
+    libboost-all-dev \
     wget
 
 RUN pip3 install --no-cache-dir \
