@@ -9,7 +9,7 @@
         "serve"
     ],
     "description": "Deploy MCITrack as REST API service",
-    "docker_image": "supervisely/mcitrack:1.0.3",
+    "docker_image": "supervisely/mcitrack:1.0.4",
     "entrypoint": "python3 -m uvicorn main:model.app --app-dir ./supervisely_integration/src --host 0.0.0.0 --port 8000 --ws websockets",
     "port": 8000,
     "task_location": "application_sessions",
@@ -18,7 +18,7 @@
     "modal_template_state": {
         "autostart": true
     },
-    "instance_version": "6.15.2",
+    "instance_version": "6.15.35",
     "restart_policy": "on_error",
     "session_tags": [
         "sly_video_tracking",

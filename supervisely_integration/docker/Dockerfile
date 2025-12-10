@@ -45,5 +45,5 @@ RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_base.pth.tar -O /weights/MCITRACK_base.pth.tar
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_large.pth.tar -O /weights/MCITRACK_large.pth.tar
 
-RUN python3 -m pip install supervisely==6.73.475
-LABEL python_sdk_version=6.73.475
+RUN python3 -m pip install supervisely==6.73.483
+LABEL python_sdk_version=6.73.483
