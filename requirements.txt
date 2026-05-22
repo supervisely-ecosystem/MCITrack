@@ -1,4 +1,4 @@
-git+https://github.com/supervisely/supervisely.git@test-autotrack
+supervisely==6.73.571
 
 --extra-index-url https://download.pytorch.org/whl/cu128
 
