@@ -18,7 +18,7 @@
     "modal_template_state": {
         "autostart": true
     },
-    "instance_version": "6.15.35",
+    "instance_version": "6.15.60",
     "restart_policy": "on_error",
     "session_tags": [
         "sly_video_tracking",
