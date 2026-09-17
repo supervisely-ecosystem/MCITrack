@@ -45,5 +45,5 @@ RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_base.pth.tar -O /weights/MCITRACK_base.pth.tar
 RUN wget https://github.com/supervisely-ecosystem/MCITrack/releases/download/v0.0.1/MCITRACK_large.pth.tar -O /weights/MCITRACK_large.pth.tar
 
-RUN python3 -m pip install supervisely==6.73.486
+RUN python3 -m pip install "supervisely[video-av]==6.74.36"
 LABEL python_sdk_version="6.73.486"

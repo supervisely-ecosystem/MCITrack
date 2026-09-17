@@ -9,6 +9,7 @@ from lib.test.parameter.mcitrack import parameters
 from lib.train.admin import create_default_local_file_ITP_train
 from lib.test.evaluation import create_default_local_file_ITP_test
 from supervisely_integration.src.tracker import MCITracker
+from supervisely_integration.src.streaming_frames import use_streaming_frames
 import supervisely as sly
 from dotenv import load_dotenv
 import os
@@ -52,6 +53,11 @@ class SlyMCITracker(BBoxTracking):
             sliding_window_mode=None,
             use_gui=True,
         )
+
+        # Frames now come from the video in one streamed decode rather than one
+        # videos.download-frame request each. Must run after Inference.__init__,
+        # which is what creates self.cache. See streaming_frames.py for why.
+        use_streaming_frames(self)
 
         # try:
         #     self.load_on_device(model_dir, "cuda")
